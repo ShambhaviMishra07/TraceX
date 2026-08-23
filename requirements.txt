@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+pandas
+numpy
+scikit-learn
+xgboost
+shap
+langgraph
+langchain-anthropic
+chromadb
+sentence-transformers
