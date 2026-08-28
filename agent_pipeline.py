@@ -1,29 +1,29 @@
-"""
-agent_pipeline.py
-LangGraph investigation pipeline: Transaction Pattern Agent, Merchant History
-Agent, Policy RAG Agent, Evidence Agent, Decision Agent.
-
-Explains a real XGBoost score/SHAP signal — never decides the score itself.
-"""
 
 import os
 from typing import TypedDict, Optional
 from getpass import getpass
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 import chromadb
 from chromadb.utils import embedding_functions
-from langchain_anthropic import ChatAnthropic
+from langchain_groq import ChatGroq
 from langgraph.graph import StateGraph, END
 
 
 # ── API key ──────────────────────────────────────────────────────────
 # Prefer an environment variable (set this in your shell / .env before
 # running uvicorn) over prompting — getpass blocks server startup.
-if "ANTHROPIC_API_KEY" not in os.environ:
-    os.environ["ANTHROPIC_API_KEY"] = getpass("Enter your Anthropic API key: ")
+if "GROQ_API_KEY" not in os.environ:
+    os.environ["GROQ_API_KEY"] = getpass("Enter your Groq API key: ")
 
-llm = ChatAnthropic(model="claude-haiku-4-5-20251001", temperature=0)
-
+llm = ChatGroq(
+    model="llama-3.3-70b-versatile",
+    temperature=0,
+    api_key=os.environ.get("GROQ_API_KEY")
+)
 
 # ── Decision threshold (must match Phase 2's cost-optimal threshold) ──
 # Import from ml_pipeline so there's a single source of truth instead of
