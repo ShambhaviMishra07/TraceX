@@ -1,6 +1,15 @@
-# Fraud-Spike Investigator
+# TraceX
 
-**An AI-native merchant risk investigation system** — built for the Razorpay AI Buildathon 2026, "AI Risk Manager" track.
+> An AI-native merchant risk investigation system with real ML-based fraud-spike detection, a multi-agent explanation layer, and policy-grounded decisions.
+
+![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-black?logo=fastapi&logoColor=white)
+![XGBoost](https://img.shields.io/badge/XGBoost-ML%20Model-EB5E28?logo=xgboost&logoColor=white)
+![LangGraph](https://img.shields.io/badge/LangGraph-Agent%20Orchestration-1C3C3C)
+![Claude](https://img.shields.io/badge/Claude-Haiku%204.5-D97757?logo=anthropic&logoColor=white)
+![ChromaDB](https://img.shields.io/badge/ChromaDB-Vector%20DB-FF6B6B)
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)
+![SQLite](https://img.shields.io/badge/SQLite-Database-003B57?logo=sqlite&logoColor=white)
 
 Instead of assigning a black-box risk score, this system detects abnormal merchant transaction spikes with a real, evaluated ML model, then runs a lightweight multi-agent investigation layer that explains *why* a merchant was flagged, citing the specific internal policy that applies — producing an auditable, explainable decision rather than an opaque number.
 
@@ -98,7 +107,6 @@ A dense, dark-mode analyst tool (not a chatbot UI): metric cards for flagged/hig
 
 ## Evaluation Methodology & Results
 
-*(Fill in your actual numbers here once Phase 1–2 runs are finalized — this section is what the buildathon brief specifically asks for.)*
 
 | Model | Precision | Recall | F1 | PR-AUC |
 |---|---|---|---|---|
