@@ -7,13 +7,14 @@ const decisionBadge = {
 };
 
 export default function CaseDetail({ investigation, onApprove, onOverride }) {
-  if (!investigation) {
-    return (
-      <div style={{ padding: "20px", color: "var(--text-muted)", fontSize: "14px" }}>
-        Select a case from the queue to see its investigation.
-      </div>
-    );
-  }
+  // In CaseDetail.jsx, wrap the empty state:
+if (!investigation) {
+  return (
+    <div className="empty-state">
+      Select a case from the queue to see its investigation.
+    </div>
+  );
+}
 
   const badge = decisionBadge[investigation.decision] || decisionBadge.MONITOR;
 

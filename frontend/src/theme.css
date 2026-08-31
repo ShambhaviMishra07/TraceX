@@ -1,0 +1,148 @@
+:root {
+  --bg-page: #0b0d10;
+  --surface-1: #15181c;
+  --border: #262b31;
+
+  --text-primary: #e8eaed;
+  --text-secondary: #9aa1a9;
+  --text-muted: #6b7280;
+
+  --text-danger: #f87171;
+  --bg-danger: rgba(248, 113, 113, 0.12);
+
+  --text-warning: #fbbf24;
+  --bg-warning: rgba(251, 191, 36, 0.12);
+
+  --text-success: #4ade80;
+
+  --fill-ghost-selected: rgba(255, 255, 255, 0.06);
+}
+
+body {
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+  margin: 0;
+}
+
+button {
+  background: var(--surface-1);
+  border: 0.5px solid var(--border);
+  color: var(--text-primary);
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--fill-ghost-selected);
+}
+
+/* add to theme.css */
+
+* {
+  box-sizing: border-box;
+}
+
+/* Card hover feedback — currently nothing responds to interaction */
+.case-row {
+  transition: background 0.12s ease;
+}
+.case-row:hover {
+  background: var(--fill-ghost-selected);
+}
+
+/* Selected case needs a left accent bar, not just a background tint —
+   this is the detail that makes Stripe/fintech dashboards feel "designed" */
+.case-row.selected {
+  background: var(--fill-ghost-selected);
+  border-left: 2px solid var(--text-danger);
+  padding-left: 12px; /* 14px - 2px border, so text doesn't shift */
+}
+
+/* Metric cards: subtle border + slightly more breathing room */
+.metric-card {
+  border: 0.5px solid var(--border);
+  transition: border-color 0.12s ease;
+}
+.metric-card:hover {
+  border-color: #3a4048;
+}
+
+/* Case detail panel needs a max-width so text doesn't stretch full-bleed on wide screens */
+.case-detail-content {
+  max-width: 640px;
+}
+
+/* Empty state should feel intentional, not like missing content */
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 300px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* theme.css — replace your :root block with this */
+
+:root,
+[data-theme="dark"] {
+  --bg-page: #0b0d10;
+  --surface-1: #15181c;
+  --surface-2: #1c2027;
+  --border: #262b31;
+
+  --text-primary: #e8eaed;
+  --text-secondary: #9aa1a9;
+  --text-muted: #6b7280;
+
+  --text-danger: #f87171;
+  --bg-danger: rgba(248, 113, 113, 0.12);
+
+  --text-warning: #fbbf24;
+  --bg-warning: rgba(251, 191, 36, 0.12);
+
+  --text-success: #4ade80;
+  --bg-success: rgba(74, 222, 128, 0.12);
+
+  --accent-blue: #60a5fa;
+  --bg-accent-blue: rgba(96, 165, 250, 0.12);
+
+  --fill-ghost-selected: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="light"] {
+  --bg-page: #f5f6f8;
+  --surface-1: #ffffff;
+  --surface-2: #f0f1f4;
+  --border: #e2e5ea;
+
+  --text-primary: #14181f;
+  --text-secondary: #5c6470;
+  --text-muted: #8a919c;
+
+  --text-danger: #dc2626;
+  --bg-danger: rgba(220, 38, 38, 0.08);
+
+  --text-warning: #b45309;
+  --bg-warning: rgba(180, 83, 9, 0.08);
+
+  --text-success: #16a34a;
+  --bg-success: rgba(22, 163, 74, 0.08);
+
+  --accent-blue: #2563eb;
+  --bg-accent-blue: rgba(37, 99, 235, 0.08);
+
+  --fill-ghost-selected: rgba(0, 0, 0, 0.045);
+}
+
+body {
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+  margin: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+}

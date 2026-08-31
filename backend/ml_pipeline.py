@@ -2,6 +2,7 @@ import xgboost as xgb
 import joblib
 import numpy as np
 import shap
+from pathlib import Path
 
 FEATURE_COLS = [
     "txn_count_robust_z", "total_amount_robust_z",
@@ -12,8 +13,12 @@ FEATURE_COLS = [
 ]
 
 model = xgb.XGBClassifier()
-model.load_model("xgb_fraud_spike.json")
-DECISION_THRESHOLD = joblib.load("decision_threshold.pkl")
+
+MODEL_PATH = Path(__file__).resolve().parent / "xgb_fraud_spike.json"
+model.load_model(MODEL_PATH)
+
+THRESHOLD_PATH = Path(__file__).resolve().parent / "decision_threshold.pkl"
+DECISION_THRESHOLD = joblib.load(THRESHOLD_PATH)
 
 explainer = shap.TreeExplainer(model)
 

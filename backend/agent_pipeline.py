@@ -28,7 +28,7 @@ llm = ChatGroq(
 # ── Decision threshold (must match Phase 2's cost-optimal threshold) ──
 # Import from ml_pipeline so there's a single source of truth instead of
 # a second hardcoded number drifting out of sync.
-from ml_pipeline import DECISION_THRESHOLD
+from backend.ml_pipeline import DECISION_THRESHOLD
 
 
 # ── Policy knowledge base ──────────────────────────────────────────────

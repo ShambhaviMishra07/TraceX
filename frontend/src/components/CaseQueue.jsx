@@ -14,15 +14,12 @@ export default function CaseQueue({ cases, selectedId, onSelect }) {
         const tone = decisionTone[c.decision] || decisionTone.MONITOR;
         const isSelected = c.case_id === selectedId;
         return (
+         
           <div
             key={c.case_id}
             onClick={() => onSelect(c.case_id)}
-            style={{
-              padding: "12px 14px",
-              borderBottom: "0.5px solid var(--border)",
-              background: isSelected ? "var(--fill-ghost-selected)" : "transparent",
-              cursor: "pointer",
-            }}
+            className={`case-row ${isSelected ? "selected" : ""}`}
+            style={{ padding: "12px 14px", borderBottom: "0.5px solid var(--border)", cursor: "pointer" }}
           >
             <p style={{ fontSize: "13px", fontWeight: 500, margin: 0 }}>{c.merchant_id}</p>
             <p style={{ fontSize: "12px", color: tone.color, margin: "2px 0 0" }}>

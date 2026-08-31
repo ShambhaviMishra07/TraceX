@@ -1,13 +1,21 @@
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from datetime import datetime
 
-from db import init_db, get_db, Merchant, TransactionDay, RiskCase, Investigation
-from schemas import TransactionDayIn, InvestigationOut, DecisionOverrideIn
-from ml_pipeline import score_transaction, FEATURE_COLS
-from agent_pipeline import run_investigation
+from backend.db import init_db, get_db, Merchant, TransactionDay, RiskCase, Investigation
+from backend.schemas import TransactionDayIn, InvestigationOut, DecisionOverrideIn
+from backend.ml_pipeline import score_transaction, FEATURE_COLS
+from backend.agent_pipeline import run_investigation
 
 app = FastAPI(title="Fraud-Spike Investigator API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Vite's default dev port
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 init_db()
 
@@ -150,3 +158,43 @@ def dashboard_summary(db: Session = Depends(get_db)):
         "pending": total_cases - investigated,
         "high_risk_decisions": high_risk,
     }
+
+@app.get("/risk-dashboard/by-day")
+def cases_by_day(db: Session = Depends(get_db)):
+    from sqlalchemy import func
+
+    rows = db.query(
+        RiskCase.day,
+        Investigation.decision,
+        func.count(Investigation.id)
+    ).join(
+        Investigation,
+        Investigation.case_id == RiskCase.id
+    ).group_by(
+        RiskCase.day,
+        Investigation.decision
+    ).all()
+
+    by_day = {}
+
+    for day, decision, count in rows:
+        by_day.setdefault(
+            day,
+            {
+                "day": f"Day {day}",
+                "monitor": 0,
+                "verify": 0,
+                "escalate": 0
+            }
+        )
+
+        key = {
+            "MONITOR": "monitor",
+            "REQUEST_VERIFICATION": "verify",
+            "ESCALATE_TO_HUMAN": "escalate"
+        }.get(decision)
+
+        if key:
+            by_day[day][key] = count
+
+    return sorted(by_day.values(), key=lambda x: x["day"])
