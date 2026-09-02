@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
+import json
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from datetime import datetime
@@ -198,3 +199,11 @@ def cases_by_day(db: Session = Depends(get_db)):
             by_day[day][key] = count
 
     return sorted(by_day.values(), key=lambda x: x["day"])
+
+@app.get("/model/cost-curve")
+def get_cost_curve():
+    with open("cost_curve.json") as f:
+        data = json.load(f)
+
+    # Downsample for the frontend — no need to send every threshold point
+    return data[::5]

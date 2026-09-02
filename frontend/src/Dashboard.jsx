@@ -13,7 +13,6 @@ const API_BASE = "http://localhost:8000";
 export default function Dashboard() {
   const [cases, setCases] = useState([]);
   const [summary, setSummary] = useState(null);
-  const [byDay, setByDay] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [investigation, setInvestigation] = useState(null);
   const [activeFilter, setActiveFilter] = useState("all");
@@ -22,15 +21,12 @@ export default function Dashboard() {
   useEffect(() => {
     async function loadData() {
       try {
-        const [casesRes, summaryRes, byDayRes] = await Promise.all([
-        fetch(`${API_BASE}/risk-cases`),
-        fetch(`${API_BASE}/risk-dashboard/summary`),
-        fetch(`${API_BASE}/risk-dashboard/by-day`),
-      ]);
-
-      setCases(await casesRes.json());
-      setSummary(await summaryRes.json());
-      setByDay(await byDayRes.json());
+        const [casesRes, summaryRes] = await Promise.all([
+          fetch(`${API_BASE}/risk-cases`),
+          fetch(`${API_BASE}/risk-dashboard/summary`),
+        ]);
+        setCases(await casesRes.json());
+        setSummary(await summaryRes.json());
       } catch (err) {
         console.error(err);
       } finally {
@@ -88,7 +84,7 @@ export default function Dashboard() {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: "12px", marginBottom: "1.5rem" }}>
-        <CasesBarChart data={byDay} />
+        <CasesBarChart data={[]} /* populate once you add a /risk-dashboard/by-day endpoint */ />
         <DecisionPieChart data={pieData} />
       </div>
 
