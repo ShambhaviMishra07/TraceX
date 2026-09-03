@@ -7,6 +7,8 @@ import CasesBarChart from "./components/CasesBarChart";
 import DecisionPieChart from "./components/DecisionPieChart";
 import CasesTable from "./components/CasesTable";
 import ThemeToggle from "./components/ThemeToggle";
+import CostCurveSlider from "./components/CostCurveSlider";
+
 
 const API_BASE = "http://localhost:8000";
 
@@ -83,18 +85,54 @@ export default function Dashboard() {
         <MetricCard label="Investigated" value={summary?.investigated ?? 0} tone="success" />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: "12px", marginBottom: "1.5rem" }}>
-        <CasesBarChart data={[]} /* populate once you add a /risk-dashboard/by-day endpoint */ />
-        <DecisionPieChart data={pieData} />
-      </div>
+    <div
+  style={{
+    display: "grid",
+    gridTemplateColumns: "1.4fr 1fr",
+    gap: "12px",
+    marginBottom: "1.5rem",
+  }}
+>
+  <CasesBarChart data={[]} />
+  <DecisionPieChart data={pieData} />
+</div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "1.5rem" }}>
-        <CasesTable cases={filteredCases} />
-        <div style={{ display: "grid", gridTemplateColumns: "180px minmax(0,1fr)", border: "0.5px solid var(--border)", borderRadius: "12px", overflow: "hidden" }}>
-          <CaseQueue cases={filteredCases} selectedId={selectedId} onSelect={setSelectedId} />
-          <CaseDetail investigation={investigation} onApprove={() => {}} onOverride={() => {}} />
-        </div>
-      </div>
+<div style={{ marginBottom: "1.5rem" }}>
+  <CostCurveSlider />
+</div>
+
+<div
+  style={{
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "12px",
+    marginBottom: "1.5rem",
+  }}
+>
+  <CasesTable cases={filteredCases} />
+
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "180px minmax(0,1fr)",
+      border: "0.5px solid var(--border)",
+      borderRadius: "12px",
+      overflow: "hidden",
+    }}
+  >
+    <CaseQueue
+      cases={filteredCases}
+      selectedId={selectedId}
+      onSelect={setSelectedId}
+    />
+
+    <CaseDetail
+      investigation={investigation}
+      onApprove={() => {}}
+      onOverride={() => {}}
+    />
+  </div>
+</div>
     </div>
   );
 }
