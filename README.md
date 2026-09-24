@@ -131,9 +131,6 @@ Three narrow agents plus an Evidence and Decision agent, orchestrated with LangG
  
 Cases are flagged cheaply by the ML model at ingestion time; the (comparatively expensive, LLM-calling) investigation only runs on-demand for flagged cases — a deliberate cost-control decision.
  
-## Frontend Dashboard
- 
-A dense analyst tool with light/dark mode, metric cards (flagged / high-risk / pending / investigated), a decision-breakdown pie chart, a cases-by-day trend chart, a filterable case queue, and an evidence panel showing each agent's finding as a structured card with the cited policy and a human approve/override action.
  
 ## Evaluation Results
  
