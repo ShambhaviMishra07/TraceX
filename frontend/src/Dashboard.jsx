@@ -209,7 +209,7 @@ export default function Dashboard() {
           marginBottom: "1rem",
         }}
       >
-        <h2 style={{ margin: 0 }}>Fraud-Spike Investigator</h2>
+        <h2 style={{ margin: 0 }}>TraceX</h2>
         <ThemeToggle />
       </div>
 

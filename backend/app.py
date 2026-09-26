@@ -557,3 +557,7 @@ def dashboard_summary(
         "pending": total_cases - investigated,
         "high_risk_decisions": high_risk,
     }
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok", "service": "fraud-spike-investigator-api"}
