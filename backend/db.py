@@ -78,3 +78,20 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+
+class RiskCase(Base):
+    __tablename__ = "risk_cases"
+    id = Column(Integer, primary_key=True)
+    merchant_id = Column(String, ForeignKey("merchants.merchant_id"), index=True)
+    day = Column(Integer)
+    xgb_proba = Column(Float)
+    shap_top_feature = Column(String)
+    loss_class = Column(String, default="txn_spike", index=True)   # NEW
+    features = Column(JSON, nullable=True)                          # NEW: snapshot used for scoring
+    status = Column(String, default="PENDING")
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    merchant = relationship("Merchant", back_populates="cases")
+    investigation = relationship("Investigation", back_populates="case", uselist=False)
