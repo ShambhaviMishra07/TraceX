@@ -18,6 +18,7 @@ class InvestigationOut(BaseModel):
     merchant_id: str
     day: int
     xgb_proba: float
+    loss_class: Optional[str] = None      
     transaction_finding: Optional[str]
     merchant_finding: Optional[str]
     retrieved_policies: Optional[List[Dict]]
