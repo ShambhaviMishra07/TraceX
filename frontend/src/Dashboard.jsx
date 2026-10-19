@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import MetricCard from "./components/MetricCard";
 import CaseQueue from "./components/CaseQueue";
 import CaseDetail from "./components/CaseDetail";
@@ -8,62 +8,66 @@ import DecisionPieChart from "./components/DecisionPieChart";
 import CasesTable from "./components/CasesTable";
 import ThemeToggle from "./components/ThemeToggle";
 import CostCurveSlider from "./components/CostCurveSlider";
+import LossClassTabs from "./components/LossClassTabs";
 
 
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000";
 
 export default function Dashboard() {
+  const [lossClass, setLossClass] = useState("txn_spike");
   const [cases, setCases] = useState([]);
   const [summary, setSummary] = useState(null);
   const [byDayData, setByDayData] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [investigation, setInvestigation] = useState(null);
+  const [investigating, setInvestigating] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all");
   const [loading, setLoading] = useState(true);
 
-  // Load cases and dashboard summary
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const [casesRes, summaryRes] = await Promise.all([
-          fetch(`${API_BASE}/risk-cases`),
-          fetch(`${API_BASE}/risk-dashboard/summary`),
-        ]);
+  // Load cases, dashboard summary and cases-by-day for the active loss class
+  const loadData = useCallback(async () => {
+    try {
+      const q = `?loss_class=${lossClass}`;
+      const [casesRes, summaryRes, byDayRes] = await Promise.all([
+        fetch(`${API_BASE}/risk-cases${q}`),
+        fetch(`${API_BASE}/risk-dashboard/summary${q}`),
+        fetch(`${API_BASE}/risk-dashboard/by-day${q}`),
+      ]);
 
-        setCases(await casesRes.json());
-        setSummary(await summaryRes.json());
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+      setCases(await casesRes.json());
+      setSummary(await summaryRes.json());
+      setByDayData(await byDayRes.json());
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
+  }, [lossClass]);
 
-    loadData();
-  }, []);
-
-  // Fetch cases-by-day data for the bar chart
+  // Reload everything whenever the loss class tab changes
   useEffect(() => {
-    fetch(`${API_BASE}/risk-dashboard/by-day`)
-      .then((r) => r.json())
-      .then(setByDayData)
-      .catch(console.error);
-  }, []);
+    setSelectedId(null);
+    setInvestigation(null);
+    setActiveFilter("all");
+    loadData();
+  }, [loadData]);
 
   // Load existing investigation or run a new one
   useEffect(() => {
     if (!selectedId) return;
+    let cancelled = false;
 
     async function loadInvestigation() {
       try {
         setInvestigation(null);
+        setInvestigating(true);
 
         const res = await fetch(
           `${API_BASE}/investigations/${selectedId}`
         );
 
         if (res.ok) {
-          setInvestigation(await res.json());
+          if (!cancelled) setInvestigation(await res.json());
         } else {
           const runRes = await fetch(
             `${API_BASE}/investigations/${selectedId}/run`,
@@ -74,14 +78,24 @@ export default function Dashboard() {
             throw new Error("Failed to run investigation");
           }
 
-          setInvestigation(await runRes.json());
+          if (!cancelled) {
+            setInvestigation(await runRes.json());
+            loadData(); // refresh queue colors, metrics and charts after a new run
+          }
         }
       } catch (err) {
         console.error(err);
+      } finally {
+        if (!cancelled) setInvestigating(false);
       }
     }
 
     loadInvestigation();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedId]);
 
   // Approve the AI-generated decision
@@ -214,6 +228,9 @@ export default function Dashboard() {
         <ThemeToggle />
       </div>
 
+      {/* Loss class tabs */}
+      <LossClassTabs active={lossClass} onChange={setLossClass} />
+
       {/* Decision filters */}
       <CategoryPills
         activeFilter={activeFilter}
@@ -268,7 +285,7 @@ export default function Dashboard() {
 
       {/* Cost curve */}
       <div style={{ marginBottom: "1.5rem" }}>
-        <CostCurveSlider />
+        <CostCurveSlider lossClass={lossClass} />
       </div>
 
       {/* Cases + Queue + Detail */}
@@ -299,6 +316,7 @@ export default function Dashboard() {
 
           <CaseDetail
             investigation={investigation}
+            loading={investigating}
             onApprove={handleApprove}
             onOverride={handleOverride}
           />
